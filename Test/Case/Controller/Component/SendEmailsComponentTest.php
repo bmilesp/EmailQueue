@@ -34,29 +34,29 @@ class SendEmailsComponentTest extends CakeTestCase {
 		$result = $this->SendEmails->split_and_sanitize(',, ;;;, ,; ; ,,');
         $this->assertEquals($result, array());
 		
-		$result = $this->SendEmails->split_and_sanitize(',, bmilesp@gmail.com ,  ,,');
-        $this->assertEquals($result, array('bmilesp@gmail.com'));
+		$result = $this->SendEmails->split_and_sanitize(',, person@gmail.com ,  ,,');
+        $this->assertEquals($result, array('person@gmail.com'));
 		
-		$result = $this->SendEmails->split_and_sanitize('bmilesp@gmail.com ;,');
-        $this->assertEquals($result, array('bmilesp@gmail.com'));
+		$result = $this->SendEmails->split_and_sanitize('person@gmail.com ;,');
+        $this->assertEquals($result, array('person@gmail.com'));
 		
-		$result = $this->SendEmails->split_and_sanitize('bmilesp@gmail.com');
-		$this->assertEquals($result, array('bmilesp@gmail.com'));
+		$result = $this->SendEmails->split_and_sanitize('person@gmail.com');
+		$this->assertEquals($result, array('person@gmail.com'));
 		
-		$result = $this->SendEmails->split_and_sanitize(' bmilesp@gmail.com , test@test.com');
-        $this->assertEquals($result, array('bmilesp@gmail.com','test@test.com'));
+		$result = $this->SendEmails->split_and_sanitize(' person@gmail.com , test@test.com');
+        $this->assertEquals($result, array('person@gmail.com','test@test.com'));
 		
-		$result = $this->SendEmails->split_and_sanitize(' bmilesp@gmail.com ; test@test.com');
-        $this->assertEquals($result, array('bmilesp@gmail.com','test@test.com'));
+		$result = $this->SendEmails->split_and_sanitize(' person@gmail.com ; test@test.com');
+        $this->assertEquals($result, array('person@gmail.com','test@test.com'));
 		
-		$result = $this->SendEmails->split_and_sanitize(' ;bmilesp@gmail.com , test@test.com');
-        $this->assertEquals($result, array('bmilesp@gmail.com','test@test.com'));
+		$result = $this->SendEmails->split_and_sanitize(' ;person@gmail.com , test@test.com');
+        $this->assertEquals($result, array('person@gmail.com','test@test.com'));
 		
-		$result = $this->SendEmails->split_and_sanitize(',;,test@test2.com ;bmilesp@gmail.com , test@test.com');
-        $this->assertEquals($result, array('bmilesp@gmail.com','test@test.com','test@test2.com'));
+		$result = $this->SendEmails->split_and_sanitize(',;,test@test2.com ;person@gmail.com , test@test.com');
+        $this->assertEquals($result, array('person@gmail.com','test@test.com','test@test2.com'));
 		
-		$result = $this->SendEmails->split_and_sanitize('test@test2.com,bmilesp@gmail.com,test@test.com');
-        $this->assertEquals($result, array('bmilesp@gmail.com','test@test.com','test@test2.com'));
+		$result = $this->SendEmails->split_and_sanitize('test@test2.com,person@gmail.com,test@test.com');
+        $this->assertEquals($result, array('person@gmail.com','test@test.com','test@test2.com'));
 		
     }
 	
@@ -65,13 +65,13 @@ class SendEmailsComponentTest extends CakeTestCase {
 	 	
 		$emailQueueObj = array();
 		$emailQueueObj['template_vars']['to'] = 'bp@bp.com';
-		$emailQueueObj['template_vars']['from'] = '  system@undergroundshirts.com  ';
-		$emailQueueObj['template_vars']['cc'] = 'bmilesp@gmail.com';
-		$emailQueueObj['template_vars']['bcc'] = 'bmilesp@yahoo.com, bplasters@undergroundshirts.com';
+		$emailQueueObj['template_vars']['from'] = '  system@company.com  ';
+		$emailQueueObj['template_vars']['cc'] = 'person@gmail.com';
+		$emailQueueObj['template_vars']['bcc'] = 'person@yahoo.com, person@company.com';
 		$emailQueueObj['template_vars']['subject'] = 'test';
 		$emailQueueObj['template_vars']['body'] = 'test test test';
 		
-		$expected = array ( 'to' => array ( 'bp@bp.com' => 'bp@bp.com', ), 'from' => array ( 'system@undergroundshirts.com' => 'system@undergroundshirts.com', ), 'cc' => array ( 'bmilesp@gmail.com' => 'bmilesp@gmail.com', ), 'bcc' => array ( 'bmilesp@yahoo.com' => 'bmilesp@yahoo.com', 'bplasters@undergroundshirts.com' => 'bplasters@undergroundshirts.com', ), 'subject' => 'test', 'template' => array ( 'template' => 'EmailQueue.raw_body', 'layout' => 'default', ), 'viewVars' => array ( 'to' => 'bp@bp.com', 'from' => 'system@undergroundshirts.com', 'cc' => 'bmilesp@gmail.com', 'bcc' => 'bmilesp@yahoo.com, bplasters@undergroundshirts.com', 'subject' => 'test', 'body' => 'test test test', ), );
+		$expected = array ( 'to' => array ( 'bp@bp.com' => 'bp@bp.com', ), 'from' => array ( 'system@company.com' => 'system@company.com', ), 'cc' => array ( 'person@gmail.com' => 'person@gmail.com', ), 'bcc' => array ( 'person@yahoo.com' => 'person@yahoo.com', 'person@company.com' => 'person@company.com', ), 'subject' => 'test', 'template' => array ( 'template' => 'EmailQueue.raw_body', 'layout' => 'default', ), 'viewVars' => array ( 'to' => 'bp@bp.com', 'from' => 'system@company.com', 'cc' => 'person@gmail.com', 'bcc' => 'person@yahoo.com, person@company.com', 'subject' => 'test', 'body' => 'test test test', ), );
 	 	$result = $this->SendEmails->email($emailQueueObj,true);
 		$this->assertEquals($result, $expected);
 		
@@ -80,17 +80,17 @@ class SendEmailsComponentTest extends CakeTestCase {
 		$expected = array ( 'bp@bp.com' => array ( 0 => 'Brandon Plasters'));
 		$this->assertEquals($result['to'], $expected);
 		
-		$emailQueueObj['template_vars']['to'] = 'bp@bp.com, bplasters@gmail.com';
+		$emailQueueObj['template_vars']['to'] = 'bp@bp.com, person@gmail.com';
 		$result = $this->SendEmails->email($emailQueueObj,true);
-		$expected = array ( 'bp@bp.com' => 'bp@bp.com', 'bplasters@gmail.com' => 'bplasters@gmail.com');
+		$expected = array ( 'bp@bp.com' => 'bp@bp.com', 'person@gmail.com' => 'person@gmail.com');
 		$this->assertEquals($result['to'], $expected);
 		
-		$emailQueueObj['template_vars']['to'] = 'bp@bp.com,,, ; bplasters@gmail.com';
+		$emailQueueObj['template_vars']['to'] = 'bp@bp.com,,, ; person@gmail.com';
 		$result = $this->SendEmails->email($emailQueueObj,true);
-		$expected = array ( 'bp@bp.com' => 'bp@bp.com', 'bplasters@gmail.com' => 'bplasters@gmail.com');
+		$expected = array ( 'bp@bp.com' => 'bp@bp.com', 'person@gmail.com' => 'person@gmail.com');
 		$this->assertEquals($result['to'], $expected);
 		
-		$emailQueueObj['template_vars']['to'] = 'bp@bp.com; bplasters';
+		$emailQueueObj['template_vars']['to'] = 'bp@bp.com; person';
 		$result = $this->SendEmails->email($emailQueueObj,true);
 		$expected = array ( 'bp@bp.com' => 'bp@bp.com');
 		$this->assertEquals($result['to'], $expected);
@@ -101,17 +101,17 @@ class SendEmailsComponentTest extends CakeTestCase {
 		$expected = array ( 'bp@bp.com' => array ( 0 => 'Brandon Plasters'));
 		$this->assertEquals($result['cc'], $expected);
 		
-		$emailQueueObj['template_vars']['cc'] = 'bp@bp.com, bplasters@gmail.com';
+		$emailQueueObj['template_vars']['cc'] = 'bp@bp.com, person@gmail.com';
 		$result = $this->SendEmails->email($emailQueueObj,true);
-		$expected = array ( 'bp@bp.com' => 'bp@bp.com', 'bplasters@gmail.com' => 'bplasters@gmail.com');
+		$expected = array ( 'bp@bp.com' => 'bp@bp.com', 'person@gmail.com' => 'person@gmail.com');
 		$this->assertEquals($result['cc'], $expected);
 		
-		$emailQueueObj['template_vars']['cc'] = 'bp@bp.com,,, ; bplasters@gmail.com';
+		$emailQueueObj['template_vars']['cc'] = 'bp@bp.com,,, ; person@gmail.com';
 		$result = $this->SendEmails->email($emailQueueObj,true);
-		$expected = array ( 'bp@bp.com' => 'bp@bp.com', 'bplasters@gmail.com' => 'bplasters@gmail.com');
+		$expected = array ( 'bp@bp.com' => 'bp@bp.com', 'person@gmail.com' => 'person@gmail.com');
 		$this->assertEquals($result['cc'], $expected);
 		
-		$emailQueueObj['template_vars']['cc'] = 'bp@bp.com; bplasters';
+		$emailQueueObj['template_vars']['cc'] = 'bp@bp.com; person';
 		$result = $this->SendEmails->email($emailQueueObj,true);
 		$expected = array ( 'bp@bp.com' => 'bp@bp.com');
 		$this->assertEquals($result['cc'], $expected);
@@ -123,17 +123,17 @@ class SendEmailsComponentTest extends CakeTestCase {
 		$expected = array ( 'bp@bp.com' => array ( 0 => 'Brandon Plasters'));
 		$this->assertEquals($result['bcc'], $expected);
 		
-		$emailQueueObj['template_vars']['bcc'] = 'bp@bp.com, bplasters@gmail.com';
+		$emailQueueObj['template_vars']['bcc'] = 'bp@bp.com, person@gmail.com';
 		$result = $this->SendEmails->email($emailQueueObj,true);
-		$expected = array ( 'bp@bp.com' => 'bp@bp.com', 'bplasters@gmail.com' => 'bplasters@gmail.com');
+		$expected = array ( 'bp@bp.com' => 'bp@bp.com', 'person@gmail.com' => 'person@gmail.com');
 		$this->assertEquals($result['bcc'], $expected);
 		
-		$emailQueueObj['template_vars']['bcc'] = 'bp@bp.com,,, ; bplasters@gmail.com';
+		$emailQueueObj['template_vars']['bcc'] = 'bp@bp.com,,, ; person@gmail.com';
 		$result = $this->SendEmails->email($emailQueueObj,true);
-		$expected = array ( 'bp@bp.com' => 'bp@bp.com', 'bplasters@gmail.com' => 'bplasters@gmail.com');
+		$expected = array ( 'bp@bp.com' => 'bp@bp.com', 'person@gmail.com' => 'person@gmail.com');
 		$this->assertEquals($result['bcc'], $expected);
 		
-		$emailQueueObj['template_vars']['bcc'] = 'bp@bp.com; bplasters';
+		$emailQueueObj['template_vars']['bcc'] = 'bp@bp.com; person';
 		$result = $this->SendEmails->email($emailQueueObj,true);
 		$expected = array ( 'bp@bp.com' => 'bp@bp.com');
 		$this->assertEquals($result['bcc'], $expected);

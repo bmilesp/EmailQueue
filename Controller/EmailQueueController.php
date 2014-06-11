@@ -64,23 +64,6 @@ class EmailQueueController extends EmailQueueAppController {
 		$this->render($file);
 	}
 	
-	/*
-	public function sample_email($to = null) {
-		$this->autoRender = false;
-		$data['body'] = "Hey";
-		$data['subject'] = 'might work';
-		$data['cc'] = 'bplasters@undergroundshirts.com';
-		$data['to'] = array("bmilesp@undergroundshirts.com"=>"Brandon Plasters");
-		$this->EmailQueue->enqueue($to, $data, 'EmailQueue.examples/email_templete');
-		echo 'GM Time: '.gmdate('Y-m-d H:i');
-		echo ' Email queued.';
-	}
-	*/
-	
-	
-	//email queue methods
-	
-	
 	
 /**
  * Checks existance of mutex and exits if present, otherwise it creates the mutex
@@ -163,44 +146,6 @@ class EmailQueueController extends EmailQueueAppController {
 			unlink(TMP . 'email_queue_sending');
 			echo 'removed lock file.';
 			die;
-		}else{
-			$this->redirect(array('action' => 'index'));
-		}
-	}
-	
-	
-	
-	function test_email($bypassAuthKey = null){
-		$this->autoRender = false;
-		$baKeyMatch = Configure::read('bypassAuthKey');
-		if($bypassAuthKey == $baKeyMatch){
-			$this->autoRender = false;
-			$this->Email = new CakeEmail();
-			$cakeEmailConfig = Configure::read('EmailQueue.Email.cakeEmailConfig');
-			$this->Email->config($cakeEmailConfig);
-			$emailQueueObj = array();
-			$emailQueueObj['template_vars']['to'] = '';
-			$emailQueueObj['template_vars']['from'] = '  system@undergroundshirts.com  ';
-			$emailQueueObj['template_vars']['cc'] = 'bmilesp@gmail.com';
-			//$emailQueueObj['template_vars']['bcc'] = 'bmilesp@yahoo.com, bplasters@undergroundshirts.com';
-			$emailQueueObj['template_vars']['subject'] = 'test';
-			$emailQueueObj['template_vars']['body'] = 'test test test';
-			
-			//test cc only with multiple, wuthout 'to' field
-			$this->EmailQueue->enQueue(null,$emailQueueObj['template_vars'],'EmailQueue.raw_body');
-			
-			//test cc with multiple and empties
-			$emailQueueObj['template_vars']['cc'] = 'bmilesp@gmail.com,,; bmilesp+222@gmail.com ; bplasters@undergroundshirts.com';
-			$this->EmailQueue->enQueue(null,$emailQueueObj['template_vars'],'EmailQueue.raw_body');
-			
-			//test to with multiple and empties
-			$emailQueueObj['template_vars']['to'] = 'bmilesp@gmail.com, bmilesp+222@gmail.com,,;';
-			unset($emailQueueObj['template_vars']['cc']);
-			$this->EmailQueue->enQueue(null,$emailQueueObj['template_vars'],'EmailQueue.raw_body');
-			
-			$emailQueueObj['template_vars']['to'] = array('bmilesp@gmail.com' => 'b p');
-			$this->EmailQueue->enQueue(null,$emailQueueObj['template_vars'],'EmailQueue.raw_body');
-			
 		}else{
 			$this->redirect(array('action' => 'index'));
 		}
