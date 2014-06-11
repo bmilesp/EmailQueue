@@ -9,9 +9,11 @@
     ],
     "minimum-stability": "dev",
     "type": "cakephp-plugin",
-    "require": {
-        "composer/installers": "~1.0",
-        "bmilesp/endpoints": "dev-master"
-        "cakedc/utils": "dev-master"
-    }
+    "require": [
+        {
+            "composer/installers": "~1.0",
+            "bmilesp/endpoints" : "dev-master",
+            "cakedc/utils": "dev-master"
+        }
+    ]
 }
