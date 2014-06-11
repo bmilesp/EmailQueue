@@ -7,14 +7,19 @@ class SendEmailsComponent extends Component {
 	var $cakeEmailConfig = array();
 	var $delimiters = array(',',';');
 	
-	var $escapeChars = array(58, 38); // ':', '&'
+	var $escapeChars = array(58); // ':', '&', 38
 	
+
+	public function initialize($controller){
+		$this->Locking = ClassRegistry::init('Crons.Locking');
+	}
+
+
 	function checkAndFireLock(){
-		if (file_exists(TMP . 'email_queue_sending')) {
+		if (!$this->Locking->lock('admin_c2_email_queue')) {
 			echo 'Apparently another process of EmailQueue is running';
 			die;
 		}
-		touch(TMP . 'email_queue_sending');
 	}
 	
 	/**
@@ -55,6 +60,11 @@ class SendEmailsComponent extends Component {
 
 	/**
 	 * postfix doesn't like special chrs defined in $this->escapeChars in the name of the sender- so we'll escape them here:
+	 *
+	 * **update this doesn't work because of the email() functino in php. the irc #php guys avoid the email function so no dice.
+	 * instead, we will replace those characters with a space 
+	 *
+	 * 
 	 * @return [type] [description]
 	 */
 	function escapeSpecialCharacters($to){
@@ -63,12 +73,12 @@ class SendEmailsComponent extends Component {
 
 				foreach($to as &$emailTo){
 					if(strstr($emailTo, chr($chr))){
-						$emailTo = str_replace(chr($chr), chr(92).chr($chr), $emailTo);
+						$emailTo = str_replace(chr($chr), chr(32), $emailTo);
 					}
 				}
 			}else{
 				if(strstr($to, chr($chr))){
-					$to = str_replace(chr($chr), chr(92).chr($chr), $to);
+					$to = str_replace(chr($chr), chr(32), $to);
 				}
 			}
 		}
@@ -262,9 +272,7 @@ class SendEmailsComponent extends Component {
 	
 	function _shutdown() {
 		
-		if(file_exists(TMP . 'email_queue_sending')){
-			unlink(TMP . 'email_queue_sending');
-		}
+		$this->Locking->unlock('admin_c2_email_queue');
 		echo 'Email Queue Complete.';
 	}
 	
