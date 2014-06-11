@@ -1,0 +1,17 @@
+{
+    "name": "bmilesp/email_queue",
+    "description": "Queue, Throttle, and Send-In-the-Future emails",
+    "authors": [
+        {
+            "name": "bmilesp",
+            "email": "bmilesp@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "type": "cakephp-plugin",
+    "require": {
+        "composer/installers": "~1.0",
+        "bmilesp/endpoints" : "dev-master",
+        "cakedc/utils": "dev-master"
+    }
+}
