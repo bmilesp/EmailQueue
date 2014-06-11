@@ -10,16 +10,19 @@ class SendEmailsComponent extends Component {
 	var $escapeChars = array(58); // ':', '&', 38
 	
 
-	public function initialize($controller){
+	public function initialize(Controller $controller){
 		$this->Locking = ClassRegistry::init('Crons.Locking');
 	}
 
 
 	function checkAndFireLock(){
-		if (!$this->Locking->lock('admin_c2_email_queue')) {
+		$slug = Configure::read('EmailQueue.lock_slug');
+
+		if (!$this->Locking->lock($slug)) {
 			echo 'Apparently another process of EmailQueue is running';
 			die;
 		}
+	
 	}
 	
 	/**
@@ -271,8 +274,8 @@ class SendEmailsComponent extends Component {
 	}
 	
 	function _shutdown() {
-		
-		$this->Locking->unlock('admin_c2_email_queue');
+		$slug = Configure::read('EmailQueue.lock_slug');
+		$this->Locking->unlock($slug);
 		echo 'Email Queue Complete.';
 	}
 	
